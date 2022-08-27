@@ -157,16 +157,28 @@ insertion.onclick = async function () {
 
 async function partition(start, end, elements) {
   let pos = start - 1;
-  for (let i = start; i <= end; i++) {
+  elements[end].classList.add("misplaced");
+  for (let i = start; i < end; i++) {
     if (elements[i].offsetHeight <= elements[end].offsetHeight) {
-      await sleep();
       pos++;
+      elements[i].classList.add("current");
+      elements[pos].classList.add("current");
+      await sleep();
       [elements[i].style.height, elements[pos].style.height] = [elements[pos].style.height, elements[i].style.height]
+      await sleep();
+      elements[i].classList.remove("current");
+      elements[pos].classList.remove("current");
     }
   }
-  // pos++;
-  // [elements[end].style.height, elements[pos].style.height] = [elements[pos].style.height, elements[end].style.height]
+  pos++;
+  elements[pos].classList.add("misplaced");
+  await sleep();
+  [elements[pos].style.height, elements[end].style.height] = [elements[end].style.height, elements[pos].style.height]
+  await sleep()
+  elements[end].classList.remove("misplaced");
+  elements[pos].classList.remove("misplaced");
   elements[pos].classList.add("sorted");
+  await sleep()
   return pos;
 }
 
@@ -202,6 +214,7 @@ async function Merge(start, mid, end, elements) {
   for (let t = 0; t < k; t++) {
     await sleep();
     elements[t + start].style.height = `${arr[t]}px`;
+    elements[t + start].classList.add("sorted")
   }
 }
 
