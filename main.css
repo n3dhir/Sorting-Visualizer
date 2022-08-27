@@ -1,0 +1,133 @@
+:root {
+  --color: #6125f9;
+  --back-color: #fafafa;
+  --sorted: #37168b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Cairo", sans-serif;
+  user-select: none;
+  color: var(--color, #c39a3b);
+  background-color: var(--back-color, #212121);
+}
+
+body {
+  height: 100vh;
+}
+
+.toggle {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  height: 20px;
+  border-radius: 20px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle label {
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  border-radius: 20px;
+  background-color: var(--color, #c39a3b);
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle label::after {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  background-color: var(--back-color, #212121);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 2px;
+  right: 3px;
+  transition: 0.2s right linear;
+}
+
+.toggle input:checked + label::after {
+  right: calc(100% - 18px);
+}
+
+header {
+  padding: 10px;
+  text-align: center;
+}
+
+header > a {
+  font-size: 35px;
+  text-decoration: none;
+}
+
+.algos {
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.algos > aside > .control > label{
+  width: 60px;
+  display: inline-block;
+}
+
+.algos > aside > .control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.algos > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.algos > div > span {
+  font-size: 20px;
+  margin: 0 5px;
+  width: 140px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.algos > div > span:hover {
+  background-color: var(--color);
+  color: var(--back-color);
+  transition: 0.2s;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: flex-end;
+}
+
+.wrapper > .content > span {
+  display: inline-block;
+  background-color: var(--color, #c39a3b);
+  margin-left: 2px;
+}
+
+.current {
+  background-color: orange !important;
+}
+
+.misplaced {
+  background-color: red !important;
+}
+
+.sorted {
+  background-color: var(--sorted, #17093a) !important;
+}
