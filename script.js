@@ -116,12 +116,10 @@ selection.onclick = async function () {
     }
     elements[i].classList.remove("current")
     if (idx !== i) {
+      [elements[i].style.height, elements[idx].style.height] = [elements[idx].style.height, elements[i].style.height];
+      await sleep();
       elements[i].classList.remove("misplaced");
       elements[idx].classList.remove("misplaced");
-      elements[idx].classList.add("current");
-      elements[i].classList.add("current");
-      await sleep();
-      [elements[i].style.height, elements[idx].style.height] = [elements[idx].style.height, elements[i].style.height];
       elements[idx].classList.remove("current");
       await sleep();
     }
@@ -138,13 +136,20 @@ insertion.onclick = async function () {
     let val = elements[i].offsetHeight;
     elements[i].classList.add("current");
     await sleep();
+    elements[i].classList.remove("current");
     while (j >= 0 && elements[j].offsetHeight > val) {
-      await sleep();
       elements[j + 1].style.height = elements[j].style.height;
+      elements[j+1].classList.add("sorted")
+      elements[j].style.height = "0px";
+      await sleep();
       j--;
     }
     elements[j + 1].style.height = `${val}px`;
-    elements[i].classList.add("sorted");
+    elements[j+1].classList.remove("sorted");
+    elements[j+1].classList.add("current");
+    await sleep();
+    elements[j+1].classList.remove("current");
+    elements[j+1].classList.add("sorted");
     await sleep();
   }
   fastRun(elements);
@@ -161,6 +166,7 @@ async function partition(start, end, elements) {
   }
   // pos++;
   // [elements[end].style.height, elements[pos].style.height] = [elements[pos].style.height, elements[end].style.height]
+  elements[pos].classList.add("sorted");
   return pos;
 }
 
