@@ -75,7 +75,7 @@ header > a {
   flex-wrap: wrap;
 }
 
-.algos > aside > .control > label{
+.algos > aside > .control > label {
   width: 60px;
   display: inline-block;
 }
@@ -130,4 +130,16 @@ header > a {
 
 .sorted {
   background-color: var(--sorted, #17093a) !important;
+}
+
+.disabled, .disabled:hover {
+  color: var(--color) !important;
+  background: var(--back-color) !important;
+  cursor: auto;
+}
+
+.active, .active:hover {
+  color: var(--back-color);
+  background: var(--color);
+  cursor: pointer;
 }

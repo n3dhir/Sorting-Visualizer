@@ -5,16 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sorting Visualizer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <header>
       <a href="">Sorting Visualizer</a>
       <div class="toggle">
-        <input type="checkbox" id="toggleButton">
+        <input type="checkbox" id="toggleButton" />
         <label for="toggleButton"></label>
       </div>
     </header>
@@ -22,11 +25,11 @@
       <aside>
         <div class="control">
           <label for="number">Density</label>
-          <input type="range" id="number" min="10" max="100">
+          <input type="range" id="number" min="10" max="100" />
         </div>
         <div class="control">
           <label for="speed">Speed</label>
-          <input type="range" id="speed" min="0" max="500" step="20">
+          <input type="range" id="speed" min="0" max="500" step="20" />
         </div>
       </aside>
       <div>
@@ -38,9 +41,8 @@
         <span id="heap">Heap Sort</span>
       </div>
     </div>
-    <div class="wrapper" id="test">
-      <div class="content" id="testt">
-      </div>
+    <div class="wrapper" id="wrapper">
+      <div class="content"></div>
     </div>
     <script src="script.js"></script>
   </body>

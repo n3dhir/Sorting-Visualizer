@@ -1,7 +1,34 @@
 let sortingSpeed = speed.value;
+let disabled = false;
+let btns = document.querySelectorAll(".algos > div > span");
+
+btns.forEach(function(btn) {
+  btn.addEventListener("click", function(e) {
+    if(!disabled) {
+      e.target.classList.add("active");
+    }
+  })
+})
+
+function disable() {
+  disabled = true;
+  btns.forEach(function(btn) {
+    if(btn.classList.contains("active"))
+      return;
+    btn.classList.add("disabled");
+  })
+}
+
+function enable() {
+  disabled = false;
+  btns.forEach(function(btn) {
+    btn.classList.remove("active");
+    btn.classList.remove("disabled");
+  })
+}
 
 speed.addEventListener("input", function () {
-  sortingSpeed = 500  - speed.value;
+  sortingSpeed = 500 - speed.value;
 })
 
 toggleButton.addEventListener("click", function () {
@@ -24,18 +51,19 @@ function generate(arrayLength) {
   for (let i = 0; i < arrayLength; i++) {
     let element = document.createElement("span");
     element.style.width = `${width}px`;
-    element.style.height = `${Math.floor(Math.random() * test.offsetHeight)}px`;
+    element.style.height = `${Math.floor(Math.random() * wrapper.offsetHeight)}px`;
     document.querySelector(".wrapper > .content").appendChild(element);
   }
 }
 
 number.addEventListener("input", function (e) {
   generate(e.target.value);
+  enable();
 })
 
 function clear() {
   document.querySelector(".wrapper > .content").innerHTML = '';
-  test.style.height = `${window.innerHeight - test.getBoundingClientRect().top}px`;
+  wrapper.style.height = `${window.innerHeight - wrapper.getBoundingClientRect().top}px`;
   generate(number.value);
 }
 
@@ -69,35 +97,44 @@ async function fastRun(elements) {
 }
 
 bubble.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
   for (let i = 0; i < elements.length - 1; i++) {
     let flag = false;
     for (let j = 0; j < elements.length - i - 1; j++) {
       elements[j].classList.add("current");
-      elements[j+1].classList.add("current");
+      elements[j + 1].classList.add("current");
       await sleep();
       if (elements[j].offsetHeight > elements[j + 1].offsetHeight) {
         flag = true;
         await sleep();
         elements[j].classList.add("misplaced");
-        elements[j+1].classList.add("misplaced");
+        elements[j + 1].classList.add("misplaced");
         await sleep();
         [elements[j].style.height, elements[j + 1].style.height] = [elements[j + 1].style.height, elements[j].style.height]
         await sleep();
         elements[j].classList.remove("misplaced");
-        elements[j+1].classList.remove("misplaced");
+        elements[j + 1].classList.remove("misplaced");
       }
       elements[j].classList.remove("current");
-      elements[j+1].classList.remove("current");
+      elements[j + 1].classList.remove("current");
     }
     elements[elements.length - i - 1].classList.add("sorted");
-    if(!flag)
+    if (!flag)
       break;
   }
-  fastRun(elements);
+  await fastRun(elements);
+  enable();
 }
 
 selection.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
   for (let i = 0; i < elements.length - 1; i++) {
     let idx = i;
@@ -126,10 +163,15 @@ selection.onclick = async function () {
     elements[i].classList.remove("current");
     elements[i].classList.add("sorted");
   }
-  fastRun(elements);
+  await fastRun(elements);
+  enable();
 }
 
 insertion.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
   for (let i = 0; i < elements.length; i++) {
     let j = i - 1;
@@ -139,20 +181,21 @@ insertion.onclick = async function () {
     elements[i].classList.remove("current");
     while (j >= 0 && elements[j].offsetHeight > val) {
       elements[j + 1].style.height = elements[j].style.height;
-      elements[j+1].classList.add("sorted")
+      elements[j + 1].classList.add("sorted")
       elements[j].style.height = "0px";
       await sleep();
       j--;
     }
     elements[j + 1].style.height = `${val}px`;
-    elements[j+1].classList.remove("sorted");
-    elements[j+1].classList.add("current");
+    elements[j + 1].classList.remove("sorted");
+    elements[j + 1].classList.add("current");
     await sleep();
-    elements[j+1].classList.remove("current");
-    elements[j+1].classList.add("sorted");
+    elements[j + 1].classList.remove("current");
+    elements[j + 1].classList.add("sorted");
     await sleep();
   }
-  fastRun(elements);
+  await fastRun(elements);
+  enable();
 }
 
 async function partition(start, end, elements) {
@@ -191,46 +234,82 @@ async function quickSort(start, end, elements) {
 }
 
 quick.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
   await quickSort(0, elements.length - 1, elements);
-  fastRun(elements);
+  await fastRun(elements);
+  enable();
 }
 
-async function Merge(start, mid, end, elements) {
-  let arr = [];
-  let i = start, j = mid + 1, k = 0;
-  while (i <= mid && j <= end) {
+async function Merge(start, mid, end, elements, isFinal) {
+  let i = start, j = mid + 1;
+  while (j <= end) {
+    if (i == j) {
+      j++;
+      continue;
+    }
+    elements[i].classList.add("current");
+    elements[j].classList.add("current");
+    await sleep();
     if (elements[i].offsetHeight < elements[j].offsetHeight) {
-      arr[k++] = elements[i++].offsetHeight;
+      elements[i].classList.remove("current");
+      elements[j].classList.remove("current");
+      if (isFinal)
+        elements[i].classList.add("sorted");
+      await sleep();
+      i++;
     }
     else {
-      arr[k++] = elements[j++].offsetHeight;
+      elements[i].classList.remove("current");
+      elements[j].classList.remove("current");
+      if (i != j) {
+        elements[i].classList.add("misplaced");
+        elements[j].classList.add("misplaced");
+        await sleep();
+        elements[j].classList.remove("misplaced");
+      }
+      let val = elements[j].offsetHeight;
+      for (let k = j; k > i; k--) {
+        elements[k].style.height = elements[k - 1].style.height;
+      }
+      if (i != j) {
+        elements[i].style.height = `${val}px`;
+        elements[i].classList.add("misplaced");
+        elements[i + 1].classList.add("misplaced");
+        await sleep();
+        elements[i].classList.remove("misplaced");
+        elements[i + 1].classList.remove("misplaced");
+        if (isFinal)
+          elements[i].classList.add("sorted");
+        await sleep();
+      }
+      i++;
+      j++;
     }
-  }
-  while (i <= mid)
-    arr[k++] = elements[i++].offsetHeight;
-  while (j <= end)
-    arr[k++] = elements[j++].offsetHeight;
-  for (let t = 0; t < k; t++) {
-    await sleep();
-    elements[t + start].style.height = `${arr[t]}px`;
-    elements[t + start].classList.add("sorted")
   }
 }
 
-async function mergeSort(start, end, elements) {
-  if (start >= end)
+async function mergeSort(start, end, elements, isFinal) {
+  if (start == end)
     return;
   let mid = start + Math.floor((end - start) / 2);
   await mergeSort(start, mid, elements);
   await mergeSort(mid + 1, end, elements);
-  await Merge(start, mid, end, elements);
+  await Merge(start, mid, end, elements, isFinal);
 }
 
 merge.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
-  await mergeSort(0, elements.length - 1, elements);
-  fastRun(elements);
+  await mergeSort(0, elements.length - 1, elements, true);
+  await fastRun(elements);
+  enable();
 }
 
 async function heapify(index, n, elements) {
@@ -244,13 +323,28 @@ async function heapify(index, n, elements) {
     mx = right;
   }
   if (mx != index) {
+    elements[index].classList.add("current");
+    elements[mx].classList.add("current");
     await sleep();
-    [elements[index].style.height, elements[mx].style.height] = [elements[mx].style.height, elements[index].style.height]
+    elements[index].classList.remove("current");
+    elements[mx].classList.remove("current");
+    elements[index].classList.add("misplaced");
+    elements[mx].classList.add("misplaced");
+    await sleep();
+    [elements[index].style.height, elements[mx].style.height] = [elements[mx].style.height, elements[index].style.height];
+    await sleep();
+    elements[index].classList.remove("misplaced");
+    elements[mx].classList.remove("misplaced");
+    await sleep();
     await heapify(mx, n, elements);
   }
 }
 
 heap.onclick = async function () {
+  if(disabled) {
+    return;
+  }
+  disable();
   let elements = document.querySelectorAll(".content > span");
   let n = elements.length;
   //building the max heap
@@ -258,9 +352,22 @@ heap.onclick = async function () {
     await heapify(i, n, elements);
   }
   for (let i = n - 1; i >= 0; i--) {
+    elements[0].classList.add("current");
+    elements[i].classList.add("current");
+    await sleep();
+    elements[0].classList.remove("current");
+    elements[i].classList.remove("current");
+    elements[0].classList.add("misplaced");
+    elements[i].classList.add("misplaced");
     await sleep();
     [elements[0].style.height, elements[i].style.height] = [elements[i].style.height, elements[0].style.height];
+    await sleep();
+    elements[0].classList.remove("misplaced");
+    elements[i].classList.remove("misplaced");
+    elements[i].classList.add("sorted");
+    await sleep();
     await heapify(0, i, elements)
   }
-  fastRun(elements);
+  await fastRun(elements);
+  enable();
 }
