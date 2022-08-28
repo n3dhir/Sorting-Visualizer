@@ -63,8 +63,17 @@ number.addEventListener("input", function (e) {
 
 function clear() {
   document.querySelector(".wrapper > .content").innerHTML = '';
-  wrapper.style.height = `${window.innerHeight - wrapper.getBoundingClientRect().top}px`;
-  generate(number.value);
+  document.fonts.ready
+  .then(() => {
+    wrapper.style.height = `${window.innerHeight - wrapper.getBoundingClientRect().top}px`;
+    generate(number.value);
+    enable();
+  })
+  .catch(() => {
+    wrapper.style.height = `${window.innerHeight - wrapper.getBoundingClientRect().top}px`;
+    generate(number.value);
+    enable();
+  });
 }
 
 clear();
@@ -80,6 +89,7 @@ function sleep(seconds = sortingSpeed) {
 async function fastRun(elements) {
   for (let i = 0; i < elements.length; i++)
     elements[i].classList.remove("sorted");
+  await sleep(500);
   let range = Math.floor(elements.length / 5);
   for (let i = 0; i < range; i++) {
     sleep(20)
