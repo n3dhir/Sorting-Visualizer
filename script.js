@@ -209,8 +209,17 @@ insertion.onclick = async function () {
 }
 
 async function partition(start, end, elements) {
+  let random = start + Math.floor(Math.random() * (end - start));
   let pos = start - 1;
+  elements[end].classList.add("current");
+  elements[random].classList.add("current");
+  await sleep();
+  [elements[end].style.height, elements[random].style.height] = [elements[random].style.height, elements[end].style.height]
+  await sleep();
+  elements[end].classList.remove("current");
+  elements[random].classList.remove("current");
   elements[end].classList.add("misplaced");
+  await sleep();
   for (let i = start; i < end; i++) {
     if (elements[i].offsetHeight <= elements[end].offsetHeight) {
       pos++;
