@@ -92,16 +92,16 @@ async function fastRun(elements) {
   await sleep(500);
   let range = Math.floor(elements.length / 5);
   for (let i = 0; i < range; i++) {
-    sleep(20)
+    sleep(300 / elements.length);
     elements[i].classList.add("sorted");
   }
   for (let i = range; i < elements.length; i++) {
-    await sleep(20);
+    await sleep(300 / elements.length);
     elements[i - range].classList.remove("sorted");
     elements[i].classList.add("sorted");
   }
   for (let i = elements.length - range; i < elements.length; i++) {
-    await sleep(20);
+    await sleep(300 / elements.length);
     elements[i].classList.remove("sorted");
   }
 }
